@@ -3,7 +3,7 @@
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/tickets/domain/src",
   "prefix": "tickets",
-  "tags": ["domain:tickets", "type:domain-logic"],
+  "tags": ["domain:tickets", "domain:tickets-api-checkin", "type:domain-logic"],
   "projectType": "library",
   "targets": {
     "test": {
