@@ -1,5 +1,6 @@
 import { inject } from '@angular/core';
 import { Routes } from '@angular/router';
+import { loadRemoteModule } from '@angular-architects/native-federation';
 import { ConfigService } from '@flight-demo/shared/util-config';
 import { AboutComponent } from './about/about.component';
 import { HomeComponent } from './home/home.component';
@@ -35,6 +36,10 @@ export const APP_ROUTES: Routes = [
           import('@flight-demo/tickets/feature-next-flights').then(
             (m) => m.NextFlightsModule
           ),
+      },
+      {
+        path: 'miles',
+        loadComponent: () => loadRemoteModule('miles', './Component')
       },
       {
         path: 'about',
