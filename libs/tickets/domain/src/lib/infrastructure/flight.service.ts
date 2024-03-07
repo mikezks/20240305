@@ -8,6 +8,7 @@ import { DefaultFlightService } from './default-flight.service';
   useClass: DefaultFlightService,
 })
 export abstract class FlightService {
+  flights$: Observable<Flight[]> = EMPTY;
   flightCount$: Observable<number> = EMPTY;
   abstract find(from: string, to: string): Observable<Flight[]>;
   abstract findById(id: string): Observable<Flight>;

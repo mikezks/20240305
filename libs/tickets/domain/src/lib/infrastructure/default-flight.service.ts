@@ -12,6 +12,8 @@ export class DefaultFlightService implements FlightService {
   private configService = inject(ConfigService);
   private flightCountSubject = new BehaviorSubject<number>(0);
   flightCount$: Observable<number> = this.flightCountSubject.asObservable();
+  private flights = new BehaviorSubject<Flight[]>([]);
+  flights$: Observable<Flight[]> = this.flights.asObservable();
 
   find(from: string, to: string): Observable<Flight[]> {
     const url = `${this.configService.config.baseUrl}/flight`;
@@ -23,7 +25,8 @@ export class DefaultFlightService implements FlightService {
     const params = { from, to };
 
     return this.http.get<Flight[]>(url, { headers, params }).pipe(
-      tap(flights => this.flightCountSubject.next(flights.length))
+      tap(flights => this.flightCountSubject.next(flights.length)),
+      tap(flights => this.flights.next(flights))
     );
   }
 

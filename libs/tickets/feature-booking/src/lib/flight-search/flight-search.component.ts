@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { FlightCardComponent } from '../flight-card/flight-card.component';
@@ -12,10 +12,12 @@ import { Flight, FlightService } from '@flight-demo/tickets/domain';
   styleUrls: ['./flight-search.component.css'],
   imports: [CommonModule, FormsModule, CityPipe, FlightCardComponent],
 })
-export class FlightSearchComponent {
+export class FlightSearchComponent implements OnInit {
+  private flightService = inject(FlightService);
+
   from = 'London';
   to = 'New York';
-  flights: Array<Flight> = [];
+  flights$ = this.flightService.flights$;
   selectedFlight: Flight | undefined;
 
   basket: Record<number, boolean> = {
@@ -23,7 +25,9 @@ export class FlightSearchComponent {
     5: true,
   };
 
-  private flightService = inject(FlightService);
+  ngOnInit(): void {
+    this.search();
+  }
 
   search(): void {
     if (!this.from || !this.to) {
@@ -34,9 +38,6 @@ export class FlightSearchComponent {
     this.selectedFlight = undefined;
 
     this.flightService.find(this.from, this.to).subscribe({
-      next: (flights) => {
-        this.flights = flights;
-      },
       error: (errResp) => {
         console.error('Error loading flights', errResp);
       },

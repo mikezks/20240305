@@ -5,6 +5,7 @@ import { FlightService } from './flight.service';
 
 @Injectable()
 export class DummyFlightService implements FlightService {
+  flights$: Observable<Flight[]> = EMPTY;
   flightCount$: Observable<number> = EMPTY;
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
