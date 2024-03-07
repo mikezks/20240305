@@ -1,9 +1,11 @@
-import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { FlightCardComponent } from '../flight-card/flight-card.component';
 import { CityPipe } from '@flight-demo/shared/ui-common';
-import { Flight, FlightService } from '@flight-demo/tickets/domain';
+import { Flight, ticketActions } from '@flight-demo/tickets/domain';
+import { Store } from '@ngrx/store';
+import { FlightCardComponent } from '../flight-card/flight-card.component';
+import { selectFilteredFlights } from './../../../../domain/src/lib/+state/tickets.selector';
 
 @Component({
   selector: 'app-flight-search',
@@ -12,22 +14,18 @@ import { Flight, FlightService } from '@flight-demo/tickets/domain';
   styleUrls: ['./flight-search.component.css'],
   imports: [CommonModule, FormsModule, CityPipe, FlightCardComponent],
 })
-export class FlightSearchComponent implements OnInit {
-  private flightService = inject(FlightService);
+export class FlightSearchComponent {
+  private store = inject(Store);
 
   from = 'London';
   to = 'New York';
-  flights$ = this.flightService.flights$;
+  flights$ = this.store.select(selectFilteredFlights);
   selectedFlight: Flight | undefined;
 
   basket: Record<number, boolean> = {
     3: true,
     5: true,
   };
-
-  ngOnInit(): void {
-    this.search();
-  }
 
   search(): void {
     if (!this.from || !this.to) {
@@ -37,11 +35,12 @@ export class FlightSearchComponent implements OnInit {
     // Reset properties
     this.selectedFlight = undefined;
 
-    this.flightService.find(this.from, this.to).subscribe({
-      error: (errResp) => {
-        console.error('Error loading flights', errResp);
-      },
-    });
+    this.store.dispatch(
+      ticketActions.flightsLoad({
+        from: this.from,
+        to: this.to
+      })
+    );
   }
 
   select(f: Flight): void {
